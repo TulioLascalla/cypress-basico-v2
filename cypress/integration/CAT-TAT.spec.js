@@ -37,7 +37,9 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     })
 
     it('campo telefone continua vazio quando preenchido com valor não-numérico', function (){
-        cy.get('#phone').type('dabajkdbfaksdnbf').should('have.value', '') //valida que o campo telefone não aceita entradas não numericas, deve estar vazio
+        cy.get('#phone')
+            .type('dabajkdbfaksdnbf')
+            .should('have.value', '') //valida que o campo telefone não aceita entradas não numericas, deve estar vazio
     })
 
     it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function(){
@@ -52,16 +54,33 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     })
 
     it('preenche e limpa os campos nome, sobrenome, email e telefone', function (){
-        cy.get('#firstName').type("Walmir").should('have.value', 'Walmir').clear().should('have.value', '')
-        cy.get('#lastName').type("Mendes").should('have.value', 'Mendes').clear().should('have.value', '')
-        cy.get('#email').type("Walmir@gmail.com").should('have.value', 'Walmir@gmail.com').clear().should('have.value', '')
-        cy.get('#phone').type("28828282").should('have.value', '28828282').clear().should('have.value', '')
+        cy.get('#firstName')
+            .type("Walmir")
+            .should('have.value', 'Walmir')
+            .clear()
+            .should('have.value', '')
+        cy.get('#lastName')
+            .type("Mendes")
+            .should('have.value', 'Mendes')
+            .clear()
+            .should('have.value', '')
+        cy.get('#email')
+            .type("Walmir@gmail.com")
+            .should('have.value', 'Walmir@gmail.com')
+            .clear()
+            .should('have.value', '')
+        cy.get('#phone')
+            .type("28828282")
+            .should('have.value', '28828282')
+            .clear()
+            .should('have.value', '')
     })
 
     it("exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios.", function(){
         cy.get('button[type="submit"]').click()
 
-        cy.get('.error').should('be.visible')
+        cy.get('.error')
+            .should('be.visible')
     })
 
     it("envia o formuário com sucesso usando um comando customizado", function(){
@@ -69,8 +88,22 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         cy.contains('button', 'Enviar')// Encontra um elemento que tenha tag 'button' e que tenha o texto "Enviar"
     })
 
-    it.only("", function(){
-
+    //SELECTS
+    it("selecionar um produto (Youtube) por seu texto", function(){
+        cy.get("#product")
+            .select("YouTube")
+            .should("have.value", "youtube")
     })
 
+    it("seleciona um produto (Mentoria) por seu valor (value)", function (){
+        cy.get("#product")
+            .select("mentoria")
+            .should("have.value", "mentoria")
+    })
+
+    it.only("", function (){
+        cy.get("#product")
+            .select(1)
+            .should('have.value', 'blog')
+    })
 })
