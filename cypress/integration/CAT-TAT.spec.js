@@ -42,7 +42,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
             .should('have.value', '') //valida que o campo telefone não aceita entradas não numericas, deve estar vazio
     })
 
-    it.only('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function(){
+    it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function(){
         cy.get('#firstName').type("Teste")
         cy.get('#lastName').type("Primeiro")
         cy.get('#email').type("teste@gmail.com")
@@ -130,6 +130,45 @@ describe('Central de Atendimento ao Cliente TAT', function() {
             .last() //seleciona o ultimo checkbox
             .uncheck() //desmarca o ultimo
             .should("not.be.checked") //confere que não está checado
+    })
+
+    //Upload de arquivos
+    it("seleciona um arquivo da pasta fixture", function (){
+        cy.get('input[type="file"]#file-upload') //muito especifico
+            .selectFile('cypress/fixtures/example.json')
+            .should(function($input){ //should pode aceitar uma function
+                expect($input[0].files[0].name).to.equal('example.json')
+            })
+    })
+
+
+    it("submeter arquivo por drag and drop", function (){
+        cy.get('input[type="file"]#file-upload') //muito especifico
+            .selectFile('cypress/fixtures/example.json', {action: 'drag-drop'})
+            .should(function($input){ //should pode aceitar uma function
+                expect($input[0].files[0].name).to.equal('example.json')
+            })
+    })
+
+    it("seleciona um arquivo utilizando uma fixture para a qual foi dada o alias", function (){
+        cy.fixture('example.json').as('sampleFile')
+        cy.get('input[type="file"]')
+            .selectFile('@sampleFile')
+            .should(function($input){
+                expect($input[0].files[0].name).to.equal('example.json')
+            })
+    })
+
+    //Links - hyperlinks
+    it("verifica que a política de privacidade abre em outra aba sem a necessidade de um clique", function(){
+        cy.get('#privacy a').should('have.attr', 'target', '_blank') //todos elemento com _blank abrem em outra guia
+    })
+
+    it("acessa a página da política de privacidade removendo o target e então clicanco no link", function (){
+        cy.get('#privacy a')
+            .invoke('removeAttr', 'target')//estrategia retira o atributo target
+            .click() //sem o target da o click e ele abre na mesma aba e podemos validar
+        cy.contains('CAC TAT - Política de privacidade').should("be.visible")//confere que contem a string
     })
 
 })
