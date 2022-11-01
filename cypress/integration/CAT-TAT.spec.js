@@ -42,11 +42,11 @@ describe('Central de Atendimento ao Cliente TAT', function() {
             .should('have.value', '') //valida que o campo telefone não aceita entradas não numericas, deve estar vazio
     })
 
-    it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function(){
+    it.only('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function(){
         cy.get('#firstName').type("Teste")
         cy.get('#lastName').type("Primeiro")
         cy.get('#email').type("teste@gmail.com")
-        cy.get('#phone-checkbox').click()
+        cy.get('#phone-checkbox').check()
         cy.get('#open-text-area').type("TESTE", {delay: 0})
         cy.get('button[type="submit"]').click()
 
@@ -114,13 +114,22 @@ describe('Central de Atendimento ao Cliente TAT', function() {
             .should('have.value', 'feedback')
     })
 
-    it.only("marca cada tipo de atendimento", function(){
+    it("marca cada tipo de atendimento", function(){
         cy.get('input[type="radio"]')
             .should('have.length', 3)
             .each(function ($radio){ //para cada um dos elementos|| passa uma função com cada elemento como argumento
                 cy.wrap($radio).check() // wrap da para fazer uma sequencia de codigo com cada elemento validando o value
                 cy.wrap($radio).should('be.checked')
             })
+    })
+
+    //Checkbox
+    it("marca todos os checkbox, depois desmarca o ultimo", function (){
+        cy.get('input[type="checkbox"]')
+            .check() //Como selecionei todos os checkbox ele realiza a alteração em todos com esse seletor
+            .last() //seleciona o ultimo checkbox
+            .uncheck() //desmarca o ultimo
+            .should("not.be.checked") //confere que não está checado
     })
 
 })
