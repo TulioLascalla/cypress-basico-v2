@@ -13,7 +13,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         cy.title().should('be.equal', 'Central de Atendimento ao Cliente TAT')
     })
 
-    it.only('preenche os campos obrigatórios e envia o formulário', function(){
+    it('preenche os campos obrigatórios e envia o formulário', function(){
 
         const longTxt = "TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE "
 
@@ -176,6 +176,22 @@ describe('Central de Atendimento ao Cliente TAT', function() {
             .invoke('removeAttr', 'target')//estrategia retira o atributo target
             .click() //sem o target da o click e ele abre na mesma aba e podemos validar
         cy.contains('CAC TAT - Política de privacidade').should("be.visible")//confere que contem a string
+    })
+
+    it('preenche a area de texto usando o comando invoke', function (){
+        const longText = Cypress._.repeat('TESTE', 20)
+        cy.get('#open-text-area')
+            .invoke('val', longText)
+            .should('have.value', longText)
+    })
+    it('faz uma requisição HTTP', function (){
+        cy.request('https://cac-tat.s3.eu-central-1.amazonaws.com/index.html')
+            .should(function (res){
+                const { status, statusText, body} = res
+                expect(status).to.equal(200)
+                expect(statusText).to.equal('OK')
+                expect(body).to.include('CAC TAT')//body inclui o testo
+            })
     })
 
 })
