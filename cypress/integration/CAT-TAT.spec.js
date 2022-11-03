@@ -2,6 +2,8 @@
 
 describe('Central de Atendimento ao Cliente TAT', function() {
 
+    const THREE_SECONDS_IN_MS = 3000
+
     beforeEach(function (){
         cy.visit('./src/index.html')
     })
@@ -11,18 +13,23 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         cy.title().should('be.equal', 'Central de Atendimento ao Cliente TAT')
     })
 
-    it('preenche os campos obrigatórios e envia o formulário', function(){
+    it.only('preenche os campos obrigatórios e envia o formulário', function(){
 
         const longTxt = "TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE "
+
+        cy.clock()//trava o relogio do sistema
 
         cy.get('#firstName').type("Teste")
         cy.get('#lastName').type("Primeiro")
         cy.get('#email').type("teste@gmail.com")
         cy.get('#phone').type("991460742")
         cy.get('#open-text-area').type(longTxt, {delay: 0}) //delay = retira o tempo de digitação, fica mais rápido o teste
-        cy.get('button[type="submit"]').click()
+        cy.contains('button', 'Enviar').click()
 
-        cy.contains('button', 'Enviar')
+        cy.get('.success').should('be.visible')
+        cy.tick(THREE_SECONDS_IN_MS) //avança no tempo em 3 segundos
+        cy.get('.success').should('not.be.visible')
+
     })
 
     it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function (){
